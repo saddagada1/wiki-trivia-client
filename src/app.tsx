@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogTrigger } from "./components/ui/dialog";
 import { Input } from "./components/ui/input";
 import io from "socket.io-client";
 import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -115,6 +115,7 @@ const App: React.FC = ({}) => {
       return data.videos;
     },
   });
+  const queryClient = useQueryClient();
   const [videoIndex, setVideoIndex] = useState(0);
   const [apiStatus, setApiStatus] = useState("idle");
 
@@ -123,7 +124,7 @@ const App: React.FC = ({}) => {
     socket.on("notification", (data: string) => {
       console.log(data);
       if (data === "completed") {
-        setApiStatus("idle");
+        queryClient.invalidateQueries({ queryKey: ["videos"] });
       } else {
         setApiStatus(data);
       }

@@ -25,8 +25,6 @@ import { toast } from "sonner";
 
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 
-const socket = io(serverUrl);
-
 const formSchema = z.object({
   topic: z.string().min(1, { message: "Required" }),
 });
@@ -112,20 +110,27 @@ const App: React.FC = ({}) => {
       if (!response.ok) {
         toast("Uh oh! Something went wrong. There was a problem reaching the server.");
       }
-      return response.json();
+      const data = await response.json();
+      setApiStatus(data.status);
+      return data.videos;
     },
   });
   const [videoIndex, setVideoIndex] = useState(0);
   const [apiStatus, setApiStatus] = useState("idle");
 
   useEffect(() => {
+    const socket = io(serverUrl);
     socket.on("notification", (data: string) => {
+      console.log(data);
       if (data === "completed") {
         setApiStatus("idle");
       } else {
         setApiStatus(data);
       }
     });
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   return (

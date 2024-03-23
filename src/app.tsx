@@ -241,7 +241,7 @@ const App: React.FC = ({}) => {
         </main>
         <div className="xl:w-1/4 flex flex-col gap-4 relative">
           <div className="indigo-card w-full aspect-[9/16]">
-            {!!videos && (
+            {!!videos && videos.length > 0 && (
               <video
                 src={videos[videoIndex].url}
                 controls
@@ -253,7 +253,8 @@ const App: React.FC = ({}) => {
             <h2 className="card-title">Status</h2>
             <ul className="text capitalize space-y-2">
               <li>
-                <b>Player:</b>&nbsp;{`${!!videos ? videos[videoIndex].topic : ""} Trivia`}
+                <b>Player:</b>&nbsp;
+                {`${!!videos && videos.length > 0 ? videos[videoIndex].topic : ""} Trivia`}
               </li>
               <li>
                 <b>Server:</b> {apiStatus}
